@@ -1,0 +1,37 @@
+// SPDX-License-Identifier: UNLICENSED
+pragma solidity ^0.8.9;
+contract share_market {
+    address public owner;
+    uint256 private totalShares;
+
+    constructor() {
+        owner = msg.sender;
+    }
+
+    function buyShares(uint256 amount) public {
+        require(msg.sender == owner, "Only the owner can buy shares");
+
+        // Ensure a positive share amount
+        assert(amount > 0);
+
+        totalShares += amount;
+    }
+
+    function sellShares(uint256 amount) public {
+        if (msg.sender != owner) {
+            revert("Only the owner can sell shares");
+        }
+
+        // Ensure a positive sale amount
+        require(amount > 0, "Share quantity must be greater than zero");
+
+        // Ensure a valid remaining share amount
+        require(amount <= totalShares, "Share quantity exceeds total shares");
+
+        totalShares -= amount;
+    }
+
+    function getTotalShares() public view returns (uint256) {
+        return totalShares;
+    }
+}
